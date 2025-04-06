@@ -3,7 +3,7 @@ ARG FREECAD_VERSION=1.0.0
 ARG ARCH=x86_64
 
 RUN apt update
-RUN apt install -y wget curl
+RUN apt install -y wget curl jq
 RUN curl "https://api.github.com/repos/FreeCAD/FreeCAD/releases/tags/${FREECAD_VERSION}" | \
   jq "(.assets.[] | select(.content_type == \"application/vnd.appimage\")) | select(.name | index(\"${ARCH}\")).browser_download_url" | \
   xargs wget -O FreeCad.AppImage
