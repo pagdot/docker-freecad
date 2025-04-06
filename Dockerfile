@@ -4,7 +4,7 @@ ARG ARCH=x86_64
 
 RUN apt update
 RUN apt install -y wget curl
-RUN curl https://api.github.com/repos/FreeCAD/FreeCAD/releases/tags/{FREECAD_VERSION} | \
+RUN curl "https://api.github.com/repos/FreeCAD/FreeCAD/releases/tags/${FREECAD_VERSION}" | \
   jq "(.assets.[] | select(.content_type == \"application/vnd.appimage\")) | select(.name | index(\"${ARCH}\")).browser_download_url" | \
   xargs wget -O FreeCad.AppImage
 RUN chmod +x ./FreeCad.AppImage
