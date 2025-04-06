@@ -1,11 +1,14 @@
 FROM debian:bookworm AS downloader
 ARG FREECAD_VERSION=1.0.0
+ARG ARCH=x86_64
 
 RUN apt update
-RUN apt install -y wget
-RUN wget https://github.com/FreeCAD/FreeCAD/releases/download/${FREECAD_VERSION}/FreeCAD_${FREECAD_VERSION}-conda-Linux-x86_64-py311.AppImage
-RUN chmod +x ./FreeCAD_${FREECAD_VERSION}-conda-Linux-x86_64-py311.AppImage
-RUN ./FreeCAD_${FREECAD_VERSION}-conda-Linux-x86_64-py311.AppImage --appimage-extract
+RUN apt install -y wget curl
+RUN curl https://api.github.com/repos/FreeCAD/FreeCAD/releases/tags/{FREECAD_VERSION} | \
+  jq "(.assets.[] | select(.content_type == \"application/vnd.appimage\")) | select(.name | index("${ARCH}")).browser_download_url" | \
+  xargs wget -O FreeCad.AppImage
+RUN chmod +x ./FreeCad.AppImage
+RUN ./FreeCad.AppImage --appimage-extract
 
 FROM ghcr.io/linuxserver/baseimage-kasmvnc:debianbookworm
 
